@@ -34,8 +34,7 @@ But over time I thought it did become a really good "centrum" for quick needs, I
 
 1. Clone the repository:
    
-`git clone https://github.com/Kythreaa/centrum-launcher.git
-   cd centrum-launcher`
+`git clone https://github.com/Kythreaa/centrum-launcher.git && cd centrum-launcher`
 
 3. Build the project:
    
