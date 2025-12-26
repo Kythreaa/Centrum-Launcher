@@ -1,0 +1,117 @@
+* {
+    outline: none;
+    font-family: "sans-serif";
+}
+
+/* Search Engine Options: "google", "startpage", "duckduckgo", "bing", "ecosia", "qwant" */
+-gtk-search-engine: "google";
+
+/* Focus on Launch: "true" (switch focus if app is open), "false" (always launch new instance) */
+-gtk-focus-on-launch: "true";
+
+/* Icon Mode Options: "nerd" (built-in font icons), "system" (standard desktop icons) */
+-gtk-icon-mode: "nerd";
+
+/* Icon Effect Options: "none", "shadow", "outline" (only applies to system icons) */
+-gtk-icon-effect: "none";
+
+/* Icon Position: "fixed" (left edge), "adjacent" (next to name) */
+-gtk-icon-position: "fixed";
+
+-gtk-scroll-duration: 120ms;
+-gtk-scroll-interval: 8ms;
+-gtk-scroll-easing: "cubic";
+-gtk-scroll-padding-top: 80px;
+-gtk-scroll-padding-bottom: 200px;
+
+.shutdown-btn { -gtk-icon: "\u{f011}"; -gtk-command: "systemctl poweroff"; }
+.reboot-btn   { -gtk-icon: "\u{f0e2}"; -gtk-command: "systemctl reboot"; }
+.logout-btn   { -gtk-icon: "\u{f08b}"; -gtk-command: "loginctl terminate-user $USER"; }
+
+.hk-clipboard      { -gtk-combo: "ctrl+z"; }
+.hk-rename         { -gtk-combo: "ctrl+r"; }
+.hk-icon           { -gtk-combo: "ctrl+e"; }
+.hk-hide-app       { -gtk-combo: "ctrl+s"; }
+.hk-toggle-hidden  { -gtk-combo: "ctrl+h"; }
+
+window {
+    background: transparent;
+    box-shadow: none;
+}
+
+.main-container {
+    background-color: #242424;
+    border: none;
+    box-shadow: none;
+    border-radius: 20px;
+}
+
+.header-bg {
+    height: 100px;
+    background-color: #242424;
+    border-radius: 20px 20px 0 0;
+}
+
+entry {
+    background-color: #303030;
+    border-radius: 20px;
+    border: none;
+    padding: 10px 20px;
+    margin: 20px;
+    font-size: 24px;
+    color: white;
+    -gtk-key-bindings: none;
+    -gtk-cursor-blink-time: 500;
+    text-align: center; /* Options: left, center, right */
+}
+
+scrollbar, scrollbar button, scrollbar slider, scrollbar trough {
+    display: none;
+}
+
+.scrolled-window, scrolledwindow {
+    border: none;
+}
+
+.app-list-container { padding: 100px 10px 90px 10px; }
+overshoot, undershoot { background: none; border: none; box-shadow: none; }
+
+.app-pill {
+    border-radius: 15px;
+    padding: 10px 20px;
+    margin-bottom: 5px;
+    transition: all 0.15s ease;
+}
+
+.app-icon { font-size: 25px; margin-right: 20px; }
+.app-name { font-size: 21px; font-weight: 500; }
+
+.app-icon, .power-btn, .mono-text, .edit-popup-entry.mono-text, .edit-popup-entry.mono-text text {
+    font-family: "0xProto Nerd Font", "Symbols Nerd Font";
+}
+
+.power-bar {
+    padding: 5px 10px;
+    margin-bottom: 10px;
+    background-color: #303030;
+    border-radius: 20px;
+}
+
+.power-btn {
+    border: none;
+    padding: 10px;
+    min-width: 45px;
+    text-align: center;
+    border-radius: 20px;
+    font-size: 25px;
+    transition: all 0.2s;
+    color: #9a9996;
+}
+
+.edit-popup { border-radius: 20px; padding: 10px; background-color: #303030; }
+.edit-popup-label { font-size: 25px; font-weight: bold; margin-bottom: 2px; color: #ff7800; }
+.edit-popup-entry, .edit-popup-entry text { font-size: 20px; padding: 5px 20px; color: white; }
+
+.clipboard-item {
+    font-size: 16px;
+}

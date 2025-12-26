@@ -1,0 +1,83 @@
+@define-color bg_base           #242424;
+@define-color bg_mantle         #303030;
+@define-color bg_surface1       rgba(255, 255, 255, 0.05);
+@define-color bg_surface1_hover rgba(255, 255, 255, 0.08);
+
+@define-color text_main         #ffffff;
+@define-color text_alpha        rgba(255, 255, 255, 0.5);
+@define-color text_sub          #9a9996;
+@define-color text_on_accent    #ffffff;
+
+@define-color accent_bg         #3584e4;
+@define-color accent_shadow     rgba(53, 132, 228, 0.4);
+@define-color accent_blue       #78aeed;
+@define-color accent_red        #f66151;
+@define-color accent_green      #8ff0a4;
+@define-color accent_peach      #ff7800;
+@define-color accent_logout     #f9f06b; /* Yellow */
+
+@define-color shadow_color      rgba(0, 0, 0, 0.5);
+@define-color shadow_entry      rgba(0, 0, 0, 0.3);
+
+.main-container {
+    background-color: @bg_base;
+    border: none;
+    box-shadow: none;
+    outline: none;
+}
+.header-bg { background-color: @bg_base; }
+
+entry {
+    background-color: @bg_mantle;
+    color: @text_main;
+    caret-color: @text_main;
+    box-shadow: 0px 0px 15px 3px @shadow_entry;
+}
+
+entry > text > placeholder { color: @text_alpha; }
+
+.app-name { color: @text_main; }
+.app-icon { color: @accent_blue; }
+
+.app-pill.selected {
+    background-color: @accent_bg;
+    box-shadow: 0px 0px 10px 1px @accent_shadow;
+}
+
+.app-pill.selected .app-name, 
+.app-pill.selected .app-icon {
+    color: @text_on_accent;
+}
+
+.app-pill:hover:not(.selected) { background-color: @bg_surface1; }
+
+.power-bar {
+    background: @bg_mantle;
+    box-shadow: 0px 0px 10px 2px @shadow_color;
+}
+
+.power-btn { color: @text_sub; background: transparent; }
+.power-btn:hover:not(.selected) { background-color: @bg_surface1_hover; color: @text_main; }
+.power-btn.selected { background-color: rgba(255, 255, 255, 0.1); }
+
+/* Power Button Specific Colors */
+.shutdown-btn.selected { color: @accent_red; }
+.reboot-btn.selected   { color: @accent_green; }
+.logout-btn.selected   { color: @accent_logout; }
+.theme-btn.selected    { color: @text_main; }
+
+.edit-popup { background-color: @bg_mantle; }
+.edit-popup-label { color: @accent_peach; }
+.edit-popup-entry { color: @text_main; background: transparent; }
+
+.color-square:focus, .hue-area:focus, .alpha-area:focus {
+    outline: 2px solid @accent_bg;
+    outline-offset: 2px;
+    box-shadow: 0px 0px 10px 1px @accent_shadow;
+}
+
+.color-copy-btn:focus {
+    background-color: @accent_bg;
+    box-shadow: 0px 0px 10px 1px @accent_shadow;
+    color: @text_on_accent;
+}
