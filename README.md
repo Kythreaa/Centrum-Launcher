@@ -2,7 +2,7 @@
 
 An application launcher for Linux, built with Rust and GTK4.
 
-Centrum Launcher is my very first project which I used to learn, I designed it to be a center tool for my PC experience hence why i tried to build a lot of tools into it.
+Centrum Launcher is my very first project which I used to learn/practice coding, I designed it to be a center tool for my PC experience hence why i tried to build a lot of tools into it.
 Since originally I never meant to release it and it was just a learning project, I used a lot of AI help (since as this was my first ever project of any kind) I felt important to disclose it.
 But over time I thought it did become a really good "centrum" for quick needs, I decided to try release it even if it's not something i'm proud of.
 
