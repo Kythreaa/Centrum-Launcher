@@ -8,7 +8,7 @@ use std::sync::LazyLock;
 pub const DEFAULT_CONFIG_CSS: &str = include_str!("resources/config.css");
 pub const DEFAULT_DARK_CSS: &str = include_str!("resources/dark.css");
 pub const DEFAULT_LIGHT_CSS: &str = include_str!("resources/light.css");
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct WindowState {
     pub width: i32,
     pub height: i32,
@@ -25,8 +25,8 @@ fn default_true() -> bool { true }
 impl Default for WindowState {
     fn default() -> Self {
         Self {
-            width: 310,
-            height: 600,
+            width: 600,
+            height: 450,
             x: -1,
             y: -1,
             history: HashMap::new(),
@@ -35,25 +35,25 @@ impl Default for WindowState {
         }
     }
 }
-#[derive(Serialize, Deserialize, Default)]
+#[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct CustomApp {
     pub name: Option<String>,
     pub icon: Option<String>,
     pub system_icon: Option<String>,
     pub hidden: Option<bool>,
 }
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct PowerOption {
     pub icon: String,
     pub command: String,
     pub class: String,
 }
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Hotkey {
     pub key: String,
     pub mods: gtk4::gdk::ModifierType,
 }
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct ScrollSettings {
     pub duration: f64,
     pub interval: u64,
@@ -61,7 +61,7 @@ pub struct ScrollSettings {
     pub top_padding: f64,
     pub bottom_padding: f64,
 }
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct ThemeConfig {
     pub power_options: Vec<PowerOption>,
     pub text_align: f32,

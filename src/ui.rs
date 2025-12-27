@@ -247,14 +247,6 @@ pub fn build_ui(app: &Application) {
     setup_css();
     window.present();
     search_entry.grab_focus();
-    let st_wm = state.clone();
-    glib::timeout_add_local(std::time::Duration::from_millis(100), move || {
-        if let Ok(s) = st_wm.try_borrow() {
-            s.wm.set_floating();
-            s.wm.center_cursor_or_window();
-        }
-        glib::ControlFlow::Break
-    });
 }
 fn create_edit_popup() -> (Box, Label, gtk4::Entry) {
     let popup = Box::builder()

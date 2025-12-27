@@ -627,16 +627,6 @@ pub fn launch_app(exec: &str, terminal: bool, history: &mut HashMap<String, u32>
     }
     *history.entry(clean_exec.to_string()).or_insert(0) += 1;
     let cmd = exec.replace("%f","").replace("%F","").replace("%u","").replace("%U","").replace("%d","").replace("%D","").replace("%n","").replace("%N","").replace("%i","").replace("%c","").replace("%k","");
-    if terminal {
-        let term = std::env::var("TERM").unwrap_or_else(|_| "x-terminal-emulator".to_string());
-        let _ = Command::new(term)
-            .arg("-e")
-            .arg("sh")
-            .arg("-c")
-            .arg(cmd.trim())
-            .spawn();
-    } else {
-        let shell_cmd = format!("setsid {} >/dev/null 2>&1 &", cmd.trim());
-        let _ = Command::new("sh").arg("-c").arg(shell_cmd).spawn();
-    }
+    let shell_cmd = if terminal { format!("setsid kitty {} >/dev/null 2>&1 &", cmd.trim()) } else { format!("setsid {} >/dev/null 2>&1 &", cmd.trim()) };
+    let _ = Command::new("sh").arg("-c").arg(shell_cmd).spawn();
 }

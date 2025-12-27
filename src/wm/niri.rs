@@ -38,7 +38,4 @@ impl WindowManager for Niri {
     fn center_cursor_or_window(&self) {
         let _ = Command::new("niri").arg("msg").arg("action").arg("center-column").spawn();
     }
-    fn set_floating(&self) {
-        let _ = Command::new("niri").arg("msg").arg("action").arg("set-window-floating").spawn();
-    }
 }

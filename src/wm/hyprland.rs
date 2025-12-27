@@ -33,11 +33,4 @@ impl WindowManager for Hyprland {
         let _ = Command::new("hyprctl").arg("dispatch").arg("exit").spawn();
     }
     fn center_cursor_or_window(&self) {}
-    fn set_floating(&self) {
-        let _ = Command::new("hyprctl")
-            .arg("dispatch")
-            .arg("setfloating")
-            .arg("address:activewindow")
-            .spawn();
-    }
 }

@@ -80,7 +80,7 @@ pub fn check_web(query: &str, history: &HashMap<String, u32>, _url_re: &Regex, s
 
         let sub_low = sub.to_lowercase();
         let mut h: Vec<_> = history.iter()
-            .filter(|(u, _)| (u.starts_with("http") || u.starts_with("xdg-open http")) && !u.contains("?q=")) 
+            .filter(|(u, _)| u.starts_with("xdg-open http") && !u.contains("?q=")) 
             .filter(|(u, _)| sub_low.is_empty() || u.to_lowercase().contains(&sub_low))
             .collect();
         h.sort_by(|a, b| b.1.cmp(a.1));
@@ -88,18 +88,15 @@ pub fn check_web(query: &str, history: &HashMap<String, u32>, _url_re: &Regex, s
             let display = u.trim_start_matches("xdg-open ")
                            .trim_start_matches("https://")
                            .trim_start_matches("http://")
-                           .trim_matches('"')
                            .to_string();
             
             let name = display.clone();
             if seen_names.contains(&name) { continue; }
             seen_names.insert(name.clone());
 
-            let exec = if u.starts_with("xdg-open ") { u.clone() } else { format!("xdg-open {}", u) };
-
             results.push(AppItem {
                 name,
-                exec,
+                exec: u.clone(),
                 terminal: false,
                 icon: "\u{f059f}".to_string(),
                 desktop_id: "web".to_string(),

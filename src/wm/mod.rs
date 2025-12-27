@@ -8,8 +8,8 @@ pub trait WindowManager {
     #[allow(dead_code)]
     fn logout(&self);
     fn center_cursor_or_window(&self);
-    fn set_floating(&self);
 }
+#[derive(Debug, Clone)]
 pub struct WindowInfo {
     pub id: String,
     pub title: String,
