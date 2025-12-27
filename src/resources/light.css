@@ -1,23 +1,23 @@
-@define-color bg_base           #f6f5f4;
-@define-color bg_mantle         #ffffff;
-@define-color bg_surface1       rgba(0, 0, 0, 0.05);
-@define-color bg_surface1_hover rgba(0, 0, 0, 0.08);
+@define-color bg_base           #ffffff;
+@define-color bg_mantle         #f6f5f4;
+@define-color bg_surface1       #edeef0;
+@define-color bg_surface1_hover #e1e2e7;
 
 @define-color text_main         #2e3436;
-@define-color text_alpha        rgba(46, 52, 54, 0.5);
+@define-color text_alpha        rgba(46, 52, 54, 0.4);
 @define-color text_sub          #5e5c64;
 @define-color text_on_accent    #ffffff;
 
 @define-color accent_bg         #3584e4;
-@define-color accent_shadow     rgba(53, 132, 228, 0.4);
-@define-color accent_blue       #3584e4;
+@define-color accent_shadow     rgba(53, 132, 228, 0.5);
+@define-color accent_blue       #1c71d8;
 @define-color accent_red        #e01b24;
 @define-color accent_green      #26a269;
 @define-color accent_peach      #e66100;
-@define-color accent_logout     #f6d32d; /* Yellow */
+@define-color accent_logout     #c88800;
 
 @define-color shadow_color      rgba(0, 0, 0, 0.1);
-@define-color shadow_entry      rgba(0, 0, 0, 0.05);
+@define-color shadow_entry      rgba(0, 0, 0, 0.1);
 
 .main-container, .header-bg {
     background-color: @bg_base;
@@ -33,9 +33,11 @@ entry {
     box-shadow: 0px 0px 15px 3px @shadow_entry;
 }
 
-entry > text > placeholder { color: @text_alpha; }
+entry > text > placeholder {
+    color: @text_alpha;
+}
 
-.app-name { color: @text_main; }
+.app-name { color: rgba(46, 52, 54, 0.8); }
 .app-icon { color: @accent_blue; }
 
 .app-pill.selected {
@@ -55,19 +57,18 @@ entry > text > placeholder { color: @text_alpha; }
     box-shadow: 0px 0px 10px 2px @shadow_color;
 }
 
-.power-btn { color: @text_sub; background: transparent; }
-.power-btn:hover:not(.selected) { background-color: @bg_surface1_hover; color: @text_main; }
-.power-btn.selected { background-color: rgba(0,0,0, 0.1); }
+.power-btn { color: @text_sub; }
+.power-btn:hover { background-color: @bg_surface1_hover; color: @text_main; }
+.power-btn.selected { background-color: rgba(0, 0, 0, 0.1); }
 
-/* Power Button Specific Colors */
 .shutdown-btn.selected { color: @accent_red; }
 .reboot-btn.selected   { color: @accent_green; }
 .logout-btn.selected   { color: @accent_logout; }
-.theme-btn.selected    { color: @text_main; }
+.theme-btn.selected    { color: rgba(0,0,0, 1); }
 
 .edit-popup { background-color: @bg_mantle; }
-.edit-popup-label { color: @accent_peach; }
-.edit-popup-entry { color: @text_main; background: transparent; }
+.edit-popup-label { color: @accent_blue; }
+.edit-popup-entry { color: @text_main; }
 
 .color-square:focus, .hue-area:focus, .alpha-area:focus {
     outline: 2px solid @accent_bg;

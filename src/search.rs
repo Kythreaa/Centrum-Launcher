@@ -214,7 +214,7 @@ pub fn check_calc(query: &str) -> Option<AppItem> {
 }
 pub fn check_system_commands(query: &str, options: &[PowerOption]) -> Vec<AppItem> {
     let mut results = Vec::new();
-    let q = query.to_lowercase();
+    // q removed for zero-copy comparison
     for opt in options {
         let name = match opt.class.as_str() {
             "shutdown-btn" => "Shutdown",
@@ -223,7 +223,7 @@ pub fn check_system_commands(query: &str, options: &[PowerOption]) -> Vec<AppIte
             "theme-btn" => "Toggle Theme",
             _ => continue,
         };
-        if name.to_lowercase() == q {
+        if name.eq_ignore_ascii_case(query) {
              results.push(AppItem {
                 name: name.to_string(),
                 exec: opt.command.clone(),
