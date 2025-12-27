@@ -268,7 +268,8 @@ pub fn setup_color_picker_logic(state: &Rc<RefCell<LauncherState>>) {
             let (r, g, b) = hsv_to_rgb(h, s, v);
             let hex = format!("#{:02X}{:02X}{:02X}{:02X}", (r*255.0) as u8, (g*255.0) as u8, (b*255.0) as u8, (sh.current_alpha*255.0) as u8);
             let mut hist = sh.history.clone();
-            launch_app(&format!("COPY:{}", hex), false, &mut hist, Some("color"), sh.theme_config.focus_on_launch);
+            let t_cmd = sh.theme_config.terminal_command.clone();
+            launch_app(&format!("COPY:{}", hex), false, &mut hist, Some("color"), sh.theme_config.focus_on_launch, &t_cmd);
         });
     }
     if let Some(rb) = &state.borrow().rgb_copy_btn {
@@ -279,7 +280,8 @@ pub fn setup_color_picker_logic(state: &Rc<RefCell<LauncherState>>) {
             let (r, g, b) = hsv_to_rgb(h, s, v);
             let rgb_str = format!("rgba({},{},{},{:.2})", (r*255.0) as u8, (g*255.0) as u8, (b*255.0) as u8, sh.current_alpha);
             let mut hist = sh.history.clone();
-            launch_app(&format!("COPY:{}", rgb_str), false, &mut hist, Some("color"), sh.theme_config.focus_on_launch);
+            let t_cmd = sh.theme_config.terminal_command.clone();
+            launch_app(&format!("COPY:{}", rgb_str), false, &mut hist, Some("color"), sh.theme_config.focus_on_launch, &t_cmd);
         });
     }
 }

@@ -7,8 +7,9 @@ pub fn check_web(query: &str, history: &HashMap<String, u32>, _url_re: &Regex, s
     let mut seen_names = HashSet::new();
 
     let (base_url, engine_name) = match search_engine {
-        "startpage" => ("https://www.startpage.com/do/dsearch?q=", "Startpage"),
+        "startpage" => ("https://www.startpage.com/sp/search?q=", "StartPage"),
         "duckduckgo" | "ddg" => ("https://duckduckgo.com/?q=", "DuckDuckGo"),
+        "google" => ("https://www.google.com/search?q=", "Google"),
         "bing" => ("https://www.bing.com/search?q=", "Bing"),
         "ecosia" => ("https://www.ecosia.org/search?q=", "Ecosia"),
         "qwant" => ("https://www.qwant.com/?q=", "Qwant"),

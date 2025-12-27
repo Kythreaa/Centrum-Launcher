@@ -64,6 +64,7 @@ pub fn update_list_view(
             app.desktop_id.clone(),
             config.focus_on_launch,
         );
+        let t_cmd = config.terminal_command.clone();
         let gest = gtk4::GestureClick::new();
         gest.connect_pressed(move |_, _, _, _| {
             if exec == "SHOW_HOTKEYS" {
@@ -71,7 +72,7 @@ pub fn update_list_view(
                 create_hotkeys_window(&app_ref, &st);
                 return;
             }
-            launch_app(&exec, term, &mut st.borrow_mut().history, Some(&did), fol);
+            launch_app(&exec, term, &mut st.borrow_mut().history, Some(&did), fol, &t_cmd);
             win.close();
         });
         ib.add_controller(gest);
