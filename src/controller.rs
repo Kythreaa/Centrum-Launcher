@@ -15,7 +15,6 @@ use std::collections::HashMap;
 use std::process::Command;
 use std::rc::Rc;
 use std::sync::LazyLock;
-
 pub fn setup_search_logic(
     entry: &gtk4::Entry,
     container: &Box,
@@ -176,7 +175,6 @@ pub fn setup_search_logic(
         }
     });
 }
-
 pub fn setup_key_controller(
     win: &ApplicationWindow,
     entry: &gtk4::Entry,
@@ -487,8 +485,8 @@ pub fn setup_key_controller(
                 let (r, g, b) = hsv_to_rgb(h, s, v);
                 let hex = format!("#{:02X}{:02X}{:02X}{:02X}", (r * 255.0) as u8, (g * 255.0) as u8, (b * 255.0) as u8, (sh.current_alpha * 255.0) as u8);
                 let fol = sh.theme_config.focus_on_launch;
-                let t_cmd = sh.theme_config.terminal_command.clone();
-                launch_app(&format!("COPY:{}", hex), false, &mut sh.history, Some("color"), fol, &t_cmd);
+                let term_cmd = sh.theme_config.terminal.clone();
+                launch_app(&format!("COPY:{}", hex), false, &mut sh.history, Some("color"), fol, &term_cmd);
                 drop(sh); w.close(); return glib::Propagation::Stop;
             }
             let action = match sh.mode {
@@ -500,17 +498,16 @@ pub fn setup_key_controller(
             if let Some((ex, trm, _isp, did)) = action {
                 if let Some(e_str) = &ex {
                     if e_str == "SHOW_HOTKEYS" {
-                        let app_ref = w.application().expect("App error");
-                        create_hotkeys_window(&app_ref, &st);
-                        return glib::Propagation::Stop;
+                        let app_ref = w.application().expect("App error"); drop(sh);
+                        create_hotkeys_window(&app_ref, &st); return glib::Propagation::Stop;
                     }
                 }
                 let fol = sh.theme_config.focus_on_launch;
-                let t_cmd = sh.theme_config.terminal_command.clone();
+                let term_cmd = sh.theme_config.terminal.clone();
                 drop(sh);
                 if let Some(exec) = ex {
                     let mut guard = st.borrow_mut();
-                    launch_app(&exec, trm, &mut guard.history, did.as_deref(), fol, &t_cmd);
+                    launch_app(&exec, trm, &mut guard.history, did.as_deref(), fol, &term_cmd);
                 }
                 w.close();
             }
@@ -540,7 +537,6 @@ pub fn setup_key_controller(
     });
     win.add_controller(controller);
 }
-
 pub fn setup_window_events(window: &ApplicationWindow, state: &Rc<RefCell<LauncherState>>) {
     let st = state.clone();
     window.connect_close_request(move |win| {
@@ -585,7 +581,6 @@ pub fn setup_window_events(window: &ApplicationWindow, state: &Rc<RefCell<Launch
         glib::ControlFlow::Break
     });
 }
-
 pub fn launch_app(exec: &str, terminal: bool, history: &mut HashMap<String, u32>, desktop_id: Option<&str>, focus_on_launch: bool, terminal_cmd: &str) {
     let wm = crate::wm::detect();
     if exec.is_empty() { return; }
@@ -634,17 +629,6 @@ pub fn launch_app(exec: &str, terminal: bool, history: &mut HashMap<String, u32>
     }
     *history.entry(clean_exec.to_string()).or_insert(0) += 1;
     let cmd = exec.replace("%f","").replace("%F","").replace("%u","").replace("%U","").replace("%d","").replace("%D","").replace("%n","").replace("%N","").replace("%i","").replace("%c","").replace("%k","");
-    
-    let shell_cmd = if terminal {
-        let t_trim = terminal_cmd.trim();
-        if t_trim.ends_with(" -e") || t_trim.ends_with(" --") {
-            format!("setsid {} {} >/dev/null 2>&1 &", t_trim, cmd.trim())
-        } else {
-            format!("setsid {} -e {} >/dev/null 2>&1 &", t_trim, cmd.trim())
-        }
-    } else { 
-        format!("setsid {} >/dev/null 2>&1 &", cmd.trim()) 
-    };
-
+    let shell_cmd = if terminal { format!("setsid {} -e {} >/dev/null 2>&1 &", terminal_cmd, cmd.trim()) } else { format!("setsid {} >/dev/null 2>&1 &", cmd.trim()) };
     let _ = Command::new("sh").arg("-c").arg(shell_cmd).spawn();
 }

@@ -15,6 +15,8 @@ pub fn create_app_list() -> (ScrolledWindow, Box) {
     scrolled.add_css_class("scrolled-window");
     let list = Box::new(Orientation::Vertical, 0);
     list.add_css_class("app-list-container");
+    list.set_hexpand(true);
+    list.set_halign(Align::Fill);
     scrolled.set_child(Some(&list));
     (scrolled, list)
 }
@@ -45,6 +47,9 @@ pub fn update_list_view(
     while let Some(child) = container.first_child() {
         container.remove(&child);
     }
+    let win_width = window.width();
+    let max_chars = if icon_pos == "fixed" { -1 } else { ((win_width - 150) / 12).max(10) };
+
     for (i, app) in apps.iter().take(100).enumerate() {
         let ib = Box::builder()
             .halign(Align::Fill)
@@ -56,15 +61,15 @@ pub fn update_list_view(
             .build();
         ib.add_css_class("app-pill");
         ib.set_cursor_from_name(Some("pointer"));
-        let (exec, term, win, st, did, fol) = (
+        let (exec, term, win, st, did, fol, term_cmd) = (
             app.exec.clone(),
             app.terminal,
             window.clone(),
             st_rc.clone(),
             app.desktop_id.clone(),
             config.focus_on_launch,
+            config.terminal.clone(),
         );
-        let t_cmd = config.terminal_command.clone();
         let gest = gtk4::GestureClick::new();
         gest.connect_pressed(move |_, _, _, _| {
             if exec == "SHOW_HOTKEYS" {
@@ -72,7 +77,7 @@ pub fn update_list_view(
                 create_hotkeys_window(&app_ref, &st);
                 return;
             }
-            launch_app(&exec, term, &mut st.borrow_mut().history, Some(&did), fol, &t_cmd);
+            launch_app(&exec, term, &mut st.borrow_mut().history, Some(&did), fol, &term_cmd);
             win.close();
         });
         ib.add_controller(gest);
@@ -80,40 +85,55 @@ pub fn update_list_view(
             ib.add_css_class("selected");
         }
         let cb = Box::builder().valign(Align::Center).build();
+        cb.set_hexpand(true);
         if icon_pos == "adjacent" {
             cb.set_halign(if align_val < 0.4 { Align::Start } else if align_val > 0.6 { Align::End } else { Align::Center });
-            cb.set_hexpand(true);
         } else {
             cb.set_halign(Align::Fill);
-            cb.set_hexpand(true);
         }
         if icon_mode == "system" && app.system_icon.is_some() {
             let img = Image::from_gicon(app.system_icon.as_ref().unwrap());
             img.set_pixel_size(32);
             img.set_valign(Align::Center);
-            img.set_halign(Align::Start);
+            img.set_halign(Align::Center);
             img.add_css_class("app-icon-img");
             if icon_effect == "shadow" { img.add_css_class("effect-shadow"); }
             if icon_effect == "outline" { img.add_css_class("effect-outline"); }
             img.set_margin_end(12);
             cb.append(&img);
         } else {
-            let ic_lbl = Label::builder().label(&app.icon).valign(Align::Center).halign(Align::Start).build();
+            let ic_lbl = Label::builder().label(&app.icon).valign(Align::Center).halign(Align::Center).build();
             ic_lbl.add_css_class("app-icon");
+            ic_lbl.set_margin_end(12);
             cb.append(&ic_lbl);
         }
+
+        let justify = if align_val < 0.4 {
+            gtk4::Justification::Left
+        } else if align_val > 0.6 {
+            gtk4::Justification::Right
+        } else {
+            gtk4::Justification::Center
+        };
+
         let nm_lbl = Label::builder()
             .label(&app.name)
             .wrap(true)
             .wrap_mode(gtk4::pango::WrapMode::WordChar)
             .xalign(align_val)
             .valign(Align::Center)
+            .justify(justify)
+            .max_width_chars(max_chars)
             .build();
+        nm_lbl.set_width_chars(0);
         nm_lbl.add_css_class("app-name");
         if app.desktop_id == "clipboard" { nm_lbl.add_css_class("clipboard-item"); }
         if icon_pos == "fixed" {
             nm_lbl.set_hexpand(true);
             nm_lbl.set_halign(Align::Fill);
+        } else {
+            nm_lbl.set_hexpand(false);
+            nm_lbl.set_halign(if align_val < 0.4 { Align::Start } else if align_val > 0.6 { Align::End } else { Align::Center });
         }
         cb.append(&nm_lbl);
         ib.append(&cb);

@@ -30,12 +30,3 @@ pub fn rgb_to_hsv(r: f64, g: f64, b: f64) -> (f64, f64, f64) {
     let s = if max == 0.0 { 0.0 } else { delta / max };
     (h, s, max)
 }
-pub fn detect_terminal() -> String {
-    let terminals = ["kitty", "alacritty", "ghostty", "foot", "wezterm", "gnome-terminal", "konsole", "xterm"];
-    for term in terminals {
-        if std::process::Command::new("which").arg(term).output().map(|o| o.status.success()).unwrap_or(false) {
-            return term.to_string();
-        }
-    }
-    "xterm".to_string()
-}

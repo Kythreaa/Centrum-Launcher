@@ -69,8 +69,8 @@ pub struct ThemeConfig {
     pub icon_effect: String,
     pub icon_position: String,
     pub search_engine: String,
+    pub terminal: String,
     pub focus_on_launch: bool,
-    pub terminal_command: String,
     pub scroll: ScrollSettings,
     pub hotkeys: HashMap<String, Hotkey>,
 }
@@ -79,21 +79,21 @@ impl ThemeConfig {
         let config_path = get_config_dir().join("config.css");
         let css = fs::read_to_string(config_path).unwrap_or_else(|_| DEFAULT_CONFIG_CSS.to_string());
         static BLOCK_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"(?s)\.([\w-]+)\s*\{([^}]*)\}").unwrap());
-        static ICON_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"-gtk-icon:\s*\"([^\"]+)\""#).unwrap());
-        static CMD_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"-gtk-command:\s*\"([^\"]+)\""#).unwrap());
+        static ICON_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"-gtk-icon:\s*"([^"]+)""#).unwrap());
+        static CMD_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"-gtk-command:\s*"([^"]+)""#).unwrap());
         static ALIGN_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"text-align:\s*(\w+);"#).unwrap());
-        static MODE_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"-gtk-icon-mode:\s*\"([^\"]+)\""#).unwrap());
+        static MODE_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"-gtk-icon-mode:\s*"([^"]+)""#).unwrap());
         static EFF_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"-gtk-icon-effect:\s*(\w+);"#).unwrap());
-        static POS_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"-gtk-icon-position:\s*\"([^\"]+)\""#).unwrap());
-        static ENGINE_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"-gtk-search-engine:\s*\"([^\"]+)\""#).unwrap());
-        static FOCUS_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"-gtk-focus-on-launch:\s*\"([^\"]+)\""#).unwrap());
-        static TERM_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"-(?:gtk|centrum)-terminal:\s*\"([^\"]+)\""#).unwrap());
+        static POS_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"-gtk-icon-position:\s*"([^"]+)""#).unwrap());
+        static ENGINE_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"-gtk-search-engine:\s*"([^"]+)""#).unwrap());
+        static TERM_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"-(gtk|centrum)-terminal:\s*"([^"]+)""#).unwrap());
+        static FOCUS_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"-gtk-focus-on-launch:\s*"([^"]+)""#).unwrap());
         static DUR_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"-gtk-scroll-duration:\s*(\d+)ms"#).unwrap());
         static INT_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"-gtk-scroll-interval:\s*(\d+)ms"#).unwrap());
-        static EAS_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"-gtk-scroll-easing:\s*\"([^\"]+)\""#).unwrap());
+        static EAS_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"-gtk-scroll-easing:\s*"([^"]+)""#).unwrap());
         static TOP_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"-gtk-scroll-padding-top:\s*(\d+)px"#).unwrap());
         static BOT_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"-gtk-scroll-padding-bottom:\s*(\d+)px"#).unwrap());
-        static COMBO_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"-gtk-combo:\s*\"([^\"]+)\""#).unwrap());
+        static COMBO_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"-gtk-combo:\s*"([^"]+)""#).unwrap());
         let mut power_options = Vec::new();
         let mut hotkeys = HashMap::new();
         for cap in BLOCK_RE.captures_iter(&css) {
@@ -144,25 +144,8 @@ impl ThemeConfig {
         let icon_effect = EFF_RE.captures(&css).map(|c| c[1].to_string()).unwrap_or_else(|| "none".to_string());
         let icon_position = POS_RE.captures(&css).map(|c| c[1].to_string()).unwrap_or_else(|| "fixed".to_string());
         let search_engine = ENGINE_RE.captures(&css).map(|c| c[1].to_lowercase()).unwrap_or_else(|| "google".to_string());
+        let terminal = TERM_RE.captures(&css).map(|c| c[2].to_string()).unwrap_or_else(|| "kitty".to_string());
         let focus_on_launch = FOCUS_RE.captures(&css).map(|c| &c[1] == "true").unwrap_or(true);
-        let terminal_command = if let Some(cap) = TERM_RE.captures(&css) {
-            cap[1].to_string()
-        } else {
-            let detected = crate::utils::detect_terminal();
-            let config_path_write = get_config_dir().join("config.css");
-            let mut new_content = css.clone();
-            if let Some(idx) = new_content.find("* {") {
-                let insert_str = format!("\n    -centrum-terminal: \"{}\";", detected);
-                new_content.insert_str(idx + 3, &insert_str);
-                let _ = std::fs::write(&config_path_write, new_content);
-            } else {
-                if let Ok(mut file) = std::fs::OpenOptions::new().append(true).open(&config_path_write) {
-                    use std::io::Write;
-                    let _ = writeln!(file, "* {{ -centrum-terminal: \"{}\"; }}", detected);
-                }
-            }
-            detected
-        };
         let scroll = ScrollSettings {
             duration: DUR_RE.captures(&css).and_then(|c| c[1].parse().ok()).unwrap_or(120.0),
             interval: INT_RE.captures(&css).and_then(|c| c[1].parse().ok()).unwrap_or(8),
@@ -177,8 +160,8 @@ impl ThemeConfig {
             icon_effect,
             icon_position,
             search_engine,
+            terminal,
             focus_on_launch,
-            terminal_command,
             scroll,
             hotkeys,
         }
@@ -238,7 +221,7 @@ pub fn save_state(state: &WindowState) {
 pub fn save_icon_mode(mode: &str) {
     let config_path = get_config_dir().join("config.css");
     if let Ok(css) = std::fs::read_to_string(&config_path) {
-        let re = Regex::new(r#"-gtk-icon-mode:\s*\"([^\"]+)\""#).unwrap();
+        let re = Regex::new(r#"-gtk-icon-mode:\s*"([^"]+)""#).unwrap();
         let new_line = format!(r#"-gtk-icon-mode: "{}""#, mode);
         let updated = re.replace(&css, new_line.as_str()).to_string();
         let _ = std::fs::write(config_path, updated);

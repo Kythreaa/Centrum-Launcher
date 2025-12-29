@@ -12,7 +12,7 @@ pub fn check_files(query: &str, _matcher: &SkimMatcherV2, _existing_items: &[App
         return list_dir(&*HOME_PATH);
     }
 
-    
+    // Check if the query itself is a valid path (absolute or home-relative)
     let full_path = if query.starts_with('~') {
         let home = std::env::var("HOME").unwrap_or_default();
         PathBuf::from(query.replacen('~', &home, 1))
@@ -21,7 +21,7 @@ pub fn check_files(query: &str, _matcher: &SkimMatcherV2, _existing_items: &[App
         if p.exists() {
             p
         } else {
-            
+            // Try as home-relative if absolute doesn't exist
             let mut hp = HOME_PATH.clone();
             hp.push(&query[1..]);
             hp
