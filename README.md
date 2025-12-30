@@ -32,19 +32,34 @@ But over time I thought it did become a really good "centrum" for quick needs, I
 
 ## Installation
 
+### Option 1: Binary Release (Easiest)
+
+1. Download the latest `centrum-launcher` binary from the [Releases](https://github.com/Kythreaa/centrum-launcher/releases) page.
+2. Make it executable:
+   ```bash
+   chmod +x centrum-launcher
+   ```
+3. Move it to your local path:
+   ```bash
+   mkdir -p ~/.local/bin
+   cp centrum-launcher ~/.local/bin/
+   ```
+
+### Option 2: Build from Source
+
 1. Clone the repository:
-   
-`git clone https://github.com/Kythreaa/centrum-launcher.git && cd centrum-launcher`
-
-3. Build the project:
-   
-` cargo build --release `
-
-4. Copy the binary to your path:
-
-`
+   ```bash
+   git clone https://github.com/Kythreaa/centrum-launcher.git
+   cd centrum-launcher
+   ```
+2. Build the project:
+   ```bash
+   cargo build --release
+   ```
+3. Copy the binary to your path:
+   ```bash
    cp target/release/centrum-launcher ~/.local/bin/
-`
+   ```
 
 ## Configuration
 
